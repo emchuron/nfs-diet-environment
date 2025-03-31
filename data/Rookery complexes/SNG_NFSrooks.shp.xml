@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<metadata>
+	<idinfo>
+		<citation>
+			<citeinfo>
+				<origin>Laura Murray/Bruce Robson</origin>
+				<pubdate>20040427</pubdate>
+				<title Sync="TRUE">rookery_shorelines</title>
+				<geoform Sync="TRUE">vector digital data</geoform>
+				<onlink>\\PRIB_JOHNSON\C$\prib_gis\snp\island wide data\biological data\rookery_shorelines.shp</onlink>
+				<ftname Sync="TRUE">rookery_shorelines</ftname></citeinfo>
+		</citation>
+		<descript>
+			<abstract>Approximate locations of Northern Fur Seal rookeries on the Pribilof Islands</abstract>
+			<purpose>This dataset was developed for use by the National Marine Mammal Laboratory, as well as for general mapping of the fur seal rookeries on the Pribilof Islands.</purpose>
+			<langdata Sync="TRUE">en</langdata></descript>
+		<timeperd>
+			<timeinfo>
+				<sngdate>
+					<caldate>unknown</caldate>
+				</sngdate>
+			</timeinfo>
+			<current>ground condition</current>
+		</timeperd>
+		<status>
+			<progress>Complete</progress>
+			<update>As needed</update>
+		</status>
+		<spdom>
+			<bounding>
+				<westbc>REQUIRED: Western-most coordinate of the limit of coverage expressed in longitude.</westbc>
+				<eastbc>REQUIRED: Eastern-most coordinate of the limit of coverage expressed in longitude.</eastbc>
+				<northbc>REQUIRED: Northern-most coordinate of the limit of coverage expressed in latitude.</northbc>
+				<southbc>REQUIRED: Southern-most coordinate of the limit of coverage expressed in latitude.</southbc>
+			</bounding>
+			<lboundng><leftbc Sync="TRUE">581804.250137</leftbc><rightbc Sync="TRUE">593177.155316</rightbc><bottombc Sync="TRUE">6268344.817280</bottombc><topbc Sync="TRUE">6274621.453048</topbc></lboundng></spdom>
+		<keywords>
+			<theme>
+				<themekt>None</themekt>
+				<themekey>rookeries</themekey>
+				<themekey>northern fur seals</themekey>
+			</theme>
+			<place>
+				<placekt>None</placekt>
+				<placekey>st. Paul Island</placekey>
+				<placekey>St. George Island</placekey>
+				<placekey>Pribilof Islands</placekey>
+			</place>
+		</keywords>
+		<accconst>Unknown.</accconst>
+		<useconst>Unknown</useconst>
+		<ptcontac>
+			<cntinfo>
+				<cntperp>
+					<cntper>Laura Murray</cntper>
+					<cntorg>DOC/NOAA/NOS/ORR/Pribilof Project Office</cntorg>
+				</cntperp>
+				<cntpos>GIS/GPS Specialist</cntpos>
+				<cntaddr>
+					<addrtype>mailing and physical address</addrtype>
+					<address>7600 Sand Point Way NE</address>
+					<address>Building 3, Room 1003</address>
+					<city>Seattle</city>
+					<state>WA</state>
+					<postal>98115</postal>
+					<country>USA</country>
+				</cntaddr>
+				<cntvoice>206-526-4914</cntvoice>
+				<cntfax>206-526-4819</cntfax>
+				<cntemail>Laura.Murray@noaa.gov</cntemail>
+				<hours>7:30 am - 4:00 pm, Pacific Standard Time</hours>
+				<cntinst>Email or Telephone.</cntinst>
+			</cntinfo>
+		</ptcontac>
+		<native Sync="TRUE">Microsoft Windows XP Version 5.1 (Build 2600) Service Pack 2; ESRI ArcCatalog 9.1.0.780</native>
+		<natvform Sync="TRUE">Shapefile</natvform></idinfo>
+	<dataqual>
+		<posacc>
+			<horizpa>
+				<horizpar>This data was digitized from the Ikonos 2001 ortho-rectified satellite imagery using ArcGIS Version 8.3.  The locations of the rookeries was determined from recognition of NMML personnel, and therefore may be slightly inaccurate.  Additionally, the size of fur seal rookeries may grow or decrease over time, and should not be considered a fixed feature.</horizpar>
+			</horizpa>
+		</posacc>
+		<lineage>
+			<procstep>
+				<procdesc>The data in this file were digitized based on the recollection of NMML personnel and the Ikonos satellite imagery.  ESRI ArcView 8.3 editor tools were used to digitize lines representing areas of the coastline that northern fur seals use as rookeries.</procdesc>
+				<procdate>20031214</procdate>
+				<proccont>
+					<cntinfo>
+						<cntperp>
+							<cntper>Laura Murray</cntper>
+							<cntorg>DOC/NOAA/NOS/ORR/Pribilof Project Office</cntorg>
+						</cntperp>
+						<cntpos>GIS/GPS Specialist</cntpos>
+						<cntaddr>
+							<addrtype>mailing and physical address</addrtype>
+							<address>7600 Sand Point Way NE</address>
+							<address>Building 3, Room 1003</address>
+							<city>Seattle</city>
+							<state>WA</state>
+							<postal>98115</postal>
+							<country>USA</country>
+						</cntaddr>
+						<cntvoice>206-526-4914</cntvoice>
+						<cntfax>206-526-4819</cntfax>
+						<cntemail>Laura.Murray@noaa.gov</cntemail>
+						<hours>7:30am - 4:00 pm, Pacific Standard Time</hours>
+						<cntinst>Email or Telephone.</cntinst>
+					</cntinfo>
+				</proccont>
+			</procstep>
+			<procstep>
+				<procdesc>Dataset copied.</procdesc>
+				<srcused>C:\Working\excavation_1997</srcused>
+			</procstep>
+			<procstep>
+				<procdesc>Metadata imported.</procdesc>
+				<srcused>C:\DOCUME~1\LAURA~1.MUR\LOCALS~1\Temp\xml16.tmp</srcused>
+			</procstep>
+			<procstep>
+				<procdesc>Dataset copied.</procdesc>
+				<srcused>E:\Rookery Maps &amp; TIFFS\rookery_shorelines</srcused>
+			</procstep>
+			<procstep><procdesc Sync="TRUE">Metadata imported.</procdesc><srcused Sync="TRUE">C:\DOCUME~1\John.Fox\LOCALS~1\Temp\xml321.tmp</srcused><date Sync="TRUE">20050328</date><time Sync="TRUE">11144500</time></procstep><procstep><procdesc Sync="TRUE">Dataset copied.</procdesc><srcused Sync="TRUE">C:\SHPO\Vector Layers\rookery_shorelines</srcused><date Sync="TRUE">20050927</date><time Sync="TRUE">10533000</time></procstep></lineage>
+	</dataqual>
+	<spdoinfo>
+		<direct Sync="TRUE">Vector</direct>
+		<ptvctinf>
+			<sdtsterm Name="rookery_shorelines">
+				<sdtstype Sync="TRUE">String</sdtstype>
+				<ptvctcnt Sync="TRUE">15</ptvctcnt>
+			</sdtsterm>
+			<esriterm Name="rookery_shorelines"><efeatyp Sync="TRUE">Simple</efeatyp><efeageom Sync="TRUE">Polyline</efeageom><esritopo Sync="TRUE">FALSE</esritopo><efeacnt Sync="TRUE">15</efeacnt><spindex Sync="TRUE">FALSE</spindex><linrefer Sync="TRUE">FALSE</linrefer></esriterm></ptvctinf>
+	</spdoinfo>
+	<eainfo>
+		<detailed Name="rookery_shorelines">
+			<enttyp>
+				<enttypl Sync="TRUE">rookery_shorelines</enttypl>
+				<enttypt Sync="TRUE">Feature Class</enttypt><enttypc Sync="TRUE">15</enttypc></enttyp>
+			<attr>
+				<attrlabl>FID</attrlabl>
+				<attrdef>Internal feature number.</attrdef>
+				<attrdefs>ESRI</attrdefs>
+				<attrdomv>
+					<udom>Sequential unique whole numbers that are automatically generated.</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>Shape</attrlabl>
+				<attrdef>Feature geometry.</attrdef>
+				<attrdefs>ESRI</attrdefs>
+				<attrdomv>
+					<udom>Coordinates defining the features.</udom>
+				</attrdomv>
+			</attr>
+			<attr>
+				<attrlabl>ID</attrlabl>
+				<attrtype Sync="TRUE">Number</attrtype><attwidth Sync="TRUE">8</attwidth></attr>
+			<attr><attrlabl Sync="TRUE">Rookery</attrlabl><attalias Sync="TRUE">Rookery</attalias><attrtype Sync="TRUE">String</attrtype><attwidth Sync="TRUE">50</attwidth></attr></detailed>
+	</eainfo>
+	<distinfo>
+		<distrib>
+			<cntinfo>
+				<cntperp>
+					<cntper>John Lindsay</cntper>
+					<cntorg>DOC/NOAA/NOS/ORR/Pribilof Project Office</cntorg>
+				</cntperp>
+				<cntpos>Project Manager</cntpos>
+				<cntaddr>
+					<addrtype>mailing and physical address</addrtype>
+					<address>7600 Sand Point Way NE</address>
+					<address>Building 3, Room 1003</address>
+					<city>Seattle</city>
+					<state>WA</state>
+					<postal>98115</postal>
+					<country>USA</country>
+				</cntaddr>
+				<cntvoice>206-526-4560</cntvoice>
+				<cntfax>206-526-4819</cntfax>
+				<cntemail>John.Lindsay@noaa.gov</cntemail>
+				<hours>8:00 am - 4:30 pm, Pacific Standard Time</hours>
+				<cntinst>Unknown.</cntinst>
+			</cntinfo>
+		</distrib>
+		<resdesc>Downloadable Data</resdesc>
+		<stdorder>
+			<digform>
+				<digtinfo>
+					<transize>0.018</transize>
+					<dssize Sync="TRUE">0.005</dssize></digtinfo>
+			</digform>
+		</stdorder>
+	</distinfo>
+	<metainfo>
+		<metd Sync="TRUE">20070716</metd>
+		<metc>
+			<cntinfo>
+				<cntorgp>
+					<cntorg>DOC/NOAA/NOS/ORR/Pribilof Project Office</cntorg>
+					<cntper>Laura Murray</cntper>
+				</cntorgp>
+				<cntpos>GIS/GPS Specialist</cntpos>
+				<cntaddr>
+					<addrtype>mailing and physical address</addrtype>
+					<address>7600 Sand Point Way NE</address>
+					<address>Building 3, Room 1003</address>
+					<city>Seattle</city>
+					<state>WA</state>
+					<postal>98115</postal>
+					<country>USA</country>
+				</cntaddr>
+				<cntvoice>206-526-4914</cntvoice>
+				<cntfax>206-526-4819</cntfax>
+				<cntemail>Laura.Murray@noaa.gov</cntemail>
+				<hours>7:30 am - 4:00 pm, Pacific Standard Time</hours>
+				<cntinst>Email or Telephone.</cntinst>
+			</cntinfo>
+		</metc>
+		<metstdn Sync="TRUE">FGDC Content Standards for Digital Geospatial Metadata</metstdn>
+		<metstdv Sync="TRUE">FGDC-STD-001-1998</metstdv>
+		<mettc Sync="TRUE">local time</mettc>
+		<metac>Unknown.</metac>
+		<metuc>Unknown.</metuc>
+		<metextns>
+			<onlink>http://www.esri.com/metadata/esriprof80.html</onlink>
+			<metprof>ESRI Metadata Profile</metprof>
+		</metextns>
+		<langmeta Sync="TRUE">en</langmeta><metextns><onlink Sync="TRUE">http://www.esri.com/metadata/esriprof80.html</onlink><metprof Sync="TRUE">ESRI Metadata Profile</metprof></metextns></metainfo>
+	<Esri><CreaDate>20141120</CreaDate><CreaTime>15175800</CreaTime><SyncOnce>FALSE</SyncOnce><SyncDate>20070716</SyncDate><SyncTime>15041500</SyncTime><ModDate>20070716</ModDate><ModTime>15041500</ModTime><DataProperties><lineage><Process Name="DefineProjection_9" ToolSource="C:\Program Files\ArcGIS\ArcToolbox\Toolboxes\Data Management Tools.tbx\DefineProjection" Date="20070709" Time="112110">DefineProjection C:\Seal_Islands_GIS\Saint_George\Physical_Natural_Resources\rookery_shorelines.shp PROJCS['WGS_1984_UTM_Zone_2N',GEOGCS['GCS_WGS_1984',DATUM['D_WGS_1984',SPHEROID['WGS_1984',6378137.0,298.257223563]],PRIMEM['Greenwich',0.0],UNIT['Degree',0.0174532925199433]],PROJECTION['Transverse_Mercator'],PARAMETER['False_Easting',500000.0],PARAMETER['False_Northing',0.0],PARAMETER['Central_Meridian',-171.0],PARAMETER['Scale_Factor',0.9996],PARAMETER['Latitude_Of_Origin',0.0],UNIT['Meter',1.0]] C:\Seal_Islands_GIS\Saint_George\Physical_Natural_Resources\rookery_shorelines.shp</Process></lineage></DataProperties><ArcGISFormat>1.0</ArcGISFormat></Esri><dataIdInfo><envirDesc Sync="TRUE">Microsoft Windows XP Version 5.1 (Build 2600) Service Pack 2; ESRI ArcCatalog 9.1.0.780</envirDesc><dataLang><languageCode Sync="TRUE" value="en"></languageCode></dataLang><idCitation><resTitle Sync="TRUE">rookery_shorelines</resTitle><presForm><PresFormCd Sync="TRUE" value="005"></PresFormCd></presForm></idCitation><spatRpType><SpatRepTypCd Sync="TRUE" value="001"></SpatRepTypCd></spatRpType><dataExt><geoEle><GeoBndBox esriExtentType="native"><westBL Sync="TRUE">581804.250137</westBL><eastBL Sync="TRUE">593177.155316</eastBL><northBL Sync="TRUE">6274621.453048</northBL><southBL Sync="TRUE">6268344.81728</southBL><exTypeCode Sync="TRUE">1</exTypeCode></GeoBndBox></geoEle></dataExt><geoBox esriExtentType="decdegrees"><westBL Sync="TRUE">-169.669272</westBL><eastBL Sync="TRUE">-169.482078</eastBL><northBL Sync="TRUE">56.608677</northBL><southBL Sync="TRUE">56.550185</southBL><exTypeCode Sync="TRUE">1</exTypeCode></geoBox></dataIdInfo><mdLang><languageCode Sync="TRUE" value="en"></languageCode></mdLang><mdStanName Sync="TRUE">ISO 19115 Geographic Information - Metadata</mdStanName><mdStanVer Sync="TRUE">DIS_ESRI1.0</mdStanVer><mdChar><CharSetCd Sync="TRUE" value="004"></CharSetCd></mdChar><mdHrLv><ScopeCd Sync="TRUE" value="005"></ScopeCd></mdHrLv><mdHrLvName Sync="TRUE">dataset</mdHrLvName><distInfo><distributor><distorTran><onLineSrc><orDesc Sync="TRUE">002</orDesc><linkage Sync="TRUE">file://\\ORRW-W-1446493\C$\Seal_Islands_GIS\Saint_George\Physical_Natural_Resources\rookery_shorelines.shp</linkage><protocol Sync="TRUE">Local Area Network</protocol></onLineSrc><transSize Sync="TRUE">0.005</transSize></distorTran><distorFormat><formatName Sync="TRUE">Shapefile</formatName></distorFormat></distributor></distInfo><spatRepInfo><VectSpatRep><topLvl><TopoLevCd Sync="TRUE" value="001"></TopoLevCd></topLvl><geometObjs Name="rookery_shorelines"><geoObjTyp><GeoObjTypCd Sync="TRUE" value="001"></GeoObjTypCd></geoObjTyp><geoObjCnt Sync="TRUE">15</geoObjCnt></geometObjs></VectSpatRep></spatRepInfo><mdDateSt Sync="TRUE">20070716</mdDateSt><spref><horizsys><cordsysn><geogcsn Sync="TRUE">GCS_WGS_1984</geogcsn><projcsn Sync="TRUE">WGS_1984_UTM_Zone_2N</projcsn></cordsysn><planar><gridsys><gridsysn Sync="TRUE">Universal Transverse Mercator</gridsysn><utm><utmzone Sync="TRUE">2</utmzone><transmer><sfctrmer Sync="TRUE">0.999600</sfctrmer><longcm Sync="TRUE">-171.000000</longcm><latprjo Sync="TRUE">0.000000</latprjo><feast Sync="TRUE">500000.000000</feast><fnorth Sync="TRUE">0.000000</fnorth></transmer></utm></gridsys><planci><plance Sync="TRUE">coordinate pair</plance><plandu Sync="TRUE">meters</plandu><coordrep><absres Sync="TRUE">0.000016</absres><ordres Sync="TRUE">0.000016</ordres></coordrep></planci></planar><geodetic><horizdn Sync="TRUE">D_WGS_1984</horizdn><ellips Sync="TRUE">WGS_1984</ellips><semiaxis Sync="TRUE">6378137.000000</semiaxis><denflat Sync="TRUE">298.257224</denflat></geodetic></horizsys></spref><refSysInfo><RefSystem><refSysID><identCode Sync="TRUE">WGS_1984_UTM_Zone_2N</identCode></refSysID></RefSystem></refSysInfo></metadata>
