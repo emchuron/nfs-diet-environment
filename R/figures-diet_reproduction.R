@@ -16,10 +16,10 @@ fitweightsd<-readRDS(file.path(output.path,"Pup weight sd gam output.rds"))
 fitweight<-readRDS(file.path(output.path,"Pup weight gam output.rds"))
 
 # data
-mort<-readRDS(file.path(output.path,"Pup mortality data.rds")) |>
+mort<-readRDS(file.path(output.path,"Pup mortality data with diet.rds")) |>
   mutate(Other=GBBM+GMGM+Herring+HexSable+Salmon+Sandlance+Smoothtongue) 
 
-weight<-readRDS(file.path(output.path,"Pup weight data.rds")) |>
+weight<-readRDS(file.path(output.path,"Pup weight data with diet.rds")) |>
   mutate(Exclude=case_when(Year==1994 & (Complex=="SGNorth" | Complex=="SGSouth")~"Yes",.default="No"),
          Other=GBBM+GMGM+Herring+HexSable+Salmon+Sandlance+Smoothtongue) |> 
   filter(Exclude=="No")
@@ -56,7 +56,8 @@ GMortOther<-ggplot(subset(mortSmooths, !is.na(Other)), aes(x=Other, y=.estimate)
   #geom_text(data=mort, aes(label=Year, color=Complex,y=`s(Other)`))+
   ggthemes::theme_few()+
   ylab("Partial effect - mortality")+
-  xlab("Other prey FO")
+  xlab("Other prey FO")+
+  theme(axis.text=element_text(size=10))
 
 GMortYear<-ggplot(subset(mortSmooths,!is.na(Year)), aes(x=Year, y=.estimate))+
   geom_hline(yintercept=0, lty=2, color="gray40", linewidth=0.5)+
@@ -66,7 +67,7 @@ GMortYear<-ggplot(subset(mortSmooths,!is.na(Year)), aes(x=Year, y=.estimate))+
   ggthemes::theme_few()+
   ylab("Partial effect - mortality")+
   xlab("Year")+
-  theme(plot.title=element_text(size=12, hjust=0.5))+
+  theme(plot.title=element_text(size=10, hjust=0.5), axis.text=element_text(size=10))+
   scale_x_continuous(expand=c(0.01,0))
 
 GWeightsOther<-ggplot(subset(weightSmooths,!is.na(Other)), aes(x=Other, y=.estimate))+
@@ -89,7 +90,7 @@ GWeightsYear<-ggplot(subset(weightSmooths,!is.na(Year)), aes(x=Year, y=.estimate
   ylab("Partial effect - mass")+
   xlab("Year")+
   scale_x_continuous(expand=c(0.01,0))+
-  theme(plot.title=element_text(size=12, hjust=0.5))
+  theme(plot.title=element_text(size=10, hjust=0.5), axis.text=element_text(size=10))
 
 GWeightsSDYear<-ggplot(subset(weightsdSmooths,!is.na(Year)), aes(x=Year, y=.estimate))+
   geom_hline(yintercept=0, lty=2, color="gray40", linewidth=0.5)+
@@ -100,15 +101,15 @@ GWeightsSDYear<-ggplot(subset(weightsdSmooths,!is.na(Year)), aes(x=Year, y=.esti
   ylab("Partial effect - mass sd")+
   xlab("Year")+
   scale_x_continuous(expand=c(0.01,0))+
-  theme(plot.title=element_text(size=12, hjust=0.5))
+  theme(plot.title=element_text(size=10, hjust=0.5), axis.text=element_text(size=10))
 
 GAllYear<-(GMortYear/GWeightsYear/GWeightsSDYear)+plot_layout(axis_title="collect")+
   plot_annotation(title="a")& 
-  theme(plot.title = element_text(size = 12,face="bold"))
+  theme(plot.title = element_text(size = 10,face="bold"))
 
 GAllDiet<-GMortOther/GWeightsOther/plot_spacer()+
   plot_layout(axis_title="collect")+ plot_annotation(title="b")& 
-  theme(plot.title = element_text(size = 12,face="bold"))
+  theme(plot.title = element_text(size = 10,face="bold"))
 
 GAll<-wrap_elements(GAllYear)|wrap_elements(GAllDiet)
 

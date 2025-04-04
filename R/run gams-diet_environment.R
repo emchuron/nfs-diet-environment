@@ -1,4 +1,4 @@
-
+# Run gams for diet-environmental analysis
 
 library(mgcv)
 library(gratia)
@@ -54,7 +54,6 @@ corSouth<-cor(dietVars$SGSouth[dietVars$SGSouth$KLPreyGroup=="Pollock",c(9:36)],
 
 # At the broader level
 corAll<-cor(dietVarsUn[dietVarsUn$KLPreyGroup=="Pollock",c(9:36)], method="pearson")
-
 
 # Fit the analysis --------------------------------------------------------
 library(DHARMa)

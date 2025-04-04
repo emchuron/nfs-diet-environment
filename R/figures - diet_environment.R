@@ -1,4 +1,4 @@
-# Create the figures associated with the diet - environmental analysis
+# Creates the figures associated with the diet - environmental analysis
 
 library(marginaleffects)
 library(paletteer)
@@ -6,6 +6,9 @@ library(here)
 library(tidyverse)
 library(ggbreak)
 library(ggokabeito)
+library(sf)
+library(magick)
+library(ggpubr)
 
 fig.path<-file.path(here::here(), "figures")
 input.path<-file.path(here::here(), "data")
@@ -115,8 +118,15 @@ GPribs<-ggplot(NULL)+
   scale_fill_manual(values=c("yellow","blue"))+
   guides(fill = "none")
 
+nfs <- image_read(file.path(here(),"figures","NFS.png"))
+nfs2<-cowplot::ggdraw() + 
+  cowplot::draw_image(nfs, scale = 1) +
+  coord_fixed()
+
+GPribsNFS<-GPribs+nfs2 + plot_annotation(tag_levels = "a")& 
+  theme(plot.tag = element_text(size = 12,face="bold"))
 #ggsave(file.path(fig.path, "Figure 1 - Complex map.tiff"), GPribs, width=6.5, height=5, dpi=300, compression="lzw")
-ggsave(file.path(fig.path, "Figure_1.pdf"), GPribs, width=6.5, height=5, dpi=600,device=cairo_pdf,family="Arial")
+ggsave(file.path(fig.path, "Figure_1.pdf"), GPribsNFS, width=9, height=5, dpi=600,device=cairo_pdf,family="Arial")
 
 
 # Figure 2 - Predictor variables -------------------------------------------

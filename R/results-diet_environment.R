@@ -1,3 +1,4 @@
+# Investigates results of GAM outputs from diet-environmental analysis
 
 library(data.table)
 library(tidyverse)
