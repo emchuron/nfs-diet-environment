@@ -85,5 +85,4 @@ GSample2<-ggplot(subset(sampleFO, CollectionYear==2002 & KLPreyGroup=="Salmon"),
 GSample<-GSample1/GSample2+plot_annotation(tag_levels = 'a')& 
   theme(plot.tag = element_text(face="bold", size=12),axis.title = element_text(size = 12))
 
-ggsave(GSample, file=file.path(fig.path, "Sample size effects on FO.png"), width=11, height=9)
 ggsave(file=file.path(fig.path,"Figure_A2.pdf"), GSample,width=8, height=8 ,device=cairo_pdf,family="Arial",dpi=600)
