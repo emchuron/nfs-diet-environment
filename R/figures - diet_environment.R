@@ -125,7 +125,7 @@ nfs2<-cowplot::ggdraw() +
 
 GPribsNFS<-GPribs+nfs2 + plot_annotation(tag_levels = "a")& 
   theme(plot.tag = element_text(size = 12,face="bold"))
-#ggsave(file.path(fig.path, "Figure 1 - Complex map.tiff"), GPribs, width=6.5, height=5, dpi=300, compression="lzw")
+
 ggsave(file.path(fig.path, "Figure_1.pdf"), GPribsNFS, width=9, height=5, dpi=600,device=cairo_pdf,family="Arial")
 
 
@@ -153,10 +153,11 @@ GEnviro<-ggplot(data=predVars, aes(x=Year, y=value))+
   xlab(NULL)+
   ylab("Predictor value")
 
-#ggsave(file.path(fig.path, "Figure_2.tiff"),GEnviro, width=12, height=5, compression="lzw", dpi=300)
 ggsave(file.path(fig.path, "Figure_2.pdf"),GEnviro, width=12, height=5, device=cairo_pdf,family="Arial", dpi=600)
 
 # Figure 3 - Year effects ------------------------------------------------------------
+
+# Link scale
 yearSmooths<-compare_smooths(fitSpecies$fitG[[1]], fitSpecies$fitG[[2]],fitSpecies$fitG[[3]],fitSpecies$fitG[[4]],fitSpecies$fitG[[5]],fitSpecies$fitG[[6]],fitSpecies$fitG[[7]], select="s(Year)") |>
   mutate(.model=factor(`.model`, labels=c("Gb/Bm", "Gm/Gm","Pacific herring", "Hexagrammid/sablefish","Walleye pollock","Salmon", "Sand lance")))
 
@@ -175,7 +176,6 @@ GYear<-draw(yearSmooths)+
   geom_hline(yintercept=0, lty=2, color="gray40", linewidth=0.5)+
   xlab(NULL)
 
-#ggsave(file.path(fig.path, "Figure_3.tiff"),GYear, width=10, height=5.5, compression="lzw", dpi=300)
 ggsave(file.path(fig.path, "Figure_3.pdf"),GYear, width=10, height=5.5, device=cairo_pdf,family="Arial", dpi=600)
 
 # On the response scale
@@ -203,10 +203,11 @@ GYear2<-ggplot(data=yearSmooths2, aes(y=.estimate, x=Year))+
   guides(fill=guide_legend(override.aes = list(alpha = 1)))+
   facet_wrap(~KLPreyGroup, scales="free", nrow=2)
 
-ggsave(file.path(fig.path, "Fig. 3_Year effects_response scale.tiff"),GYear2, width=10, height=5.5, compression="lzw", dpi=300)
+#ggsave(file.path(fig.path, "Fig. 3_Year effects_response scale.tiff"),GYear2, width=10, height=5.5, compression="lzw", dpi=300)
 
 # Figure 4c - Pollock effects ------------------------------------------------------------
 
+# Link scale
 pollockSmooths<-compare_smooths(fitSpecies$fitG[[3]],fitSpecies$fitG[[4]],fitSpecies$fitG[[5]],fitSpecies$fitG[[6]], select="s(walleye_pollock_mean_cpue_no)")|>
   mutate(.model=factor(`.model`, labels=c("Pacific herring", "Hexagrammid/sablefish","Walleye pollock","Salmon")))
 
@@ -223,8 +224,6 @@ GPollP<-draw(pollockSmooths)+
   guides(fill=guide_legend(override.aes = list(alpha = 1)))+
   facet_wrap(~.model, scales="free", nrow=1)+
   geom_hline(yintercept=0, lty=2, color="gray40", linewidth=0.5)
-
-#ggsave(file.path(fig.path, "Fig. 4_Pollock effects.tiff"),GPollP, width=10, height=3.5, compression="lzw", dpi=300)
 
 # On the response scale
 pollockSmooths2<-fitSpecies |>
@@ -251,12 +250,11 @@ GPollP2<-ggplot(data=pollockSmooths2, aes(y=.estimate, x=walleye_pollock_mean_cp
   guides(fill=guide_legend(override.aes = list(alpha = 1)))+
   facet_wrap(~KLPreyGroup, scales="free", nrow=2)
 
-#ggsave(file.path(fig.path, "Fig. 4_Pollock effects_response.tiff"),GPollP2, width=8, height=5.5, compression="lzw", dpi=300)
-
 # Figure 4a - Bottom Temperature effects ------------------------------------------------------------
+
+# Link scale
 bottomSmooths<-compare_smooths(fitSpecies$fitG[[2]],fitSpecies$fitG[[3]], fitSpecies$fitG[[4]],fitSpecies$fitG[[5]],fitSpecies$fitG[[6]],select="s(bott_s)") |>
   mutate(.model=factor(`.model`, labels=c("Gm/Gm","Pacific herring", "Hexagrammid/sablefish","Walleye pollock","Salmon")))
-
 
 GBottP<-draw(bottomSmooths)+
   ggthemes::theme_few()+
@@ -269,8 +267,6 @@ GBottP<-draw(bottomSmooths)+
   guides(fill=guide_legend(override.aes = list(alpha = 1)))+
   facet_wrap(~.model, scales="free", nrow=1)+
   geom_hline(yintercept=0, lty=2, color="gray40", linewidth=0.5)
-
-#ggsave(file.path(fig.path, "Fig. 5_Bottom Temp effects.tiff"),GBottP, width=12, height=3.5, compression="lzw", dpi=300)
 
 # On the response scale
 bottSmooths2<-fitSpecies |>
@@ -299,10 +295,9 @@ GBottP2<-ggplot(data=bottSmooths2, aes(y=.estimate, x=bott_s))+
                                       "Hexagrammid/sablefish","Pollock"="Walleye pollock","Salmon"= "Salmon")))
 
 
-#ggsave(file.path(fig.path, "Fig. 5_Bottom Temp effects_response scale.tiff"),GBottP2, width=6, height=6, compression="lzw", dpi=300)
-
 # Figure 4b - Surface Temperature effects ------------------------------------------------------------
 
+# Link scale
 surfSmooths<-compare_smooths(fitSpecies$fitG[[2]],fitSpecies$fitG[[3]],fitSpecies$fitG[[5]],fitSpecies$fitG[[8]],select="s(sstReShelf)") |>
   mutate(.model=factor(`.model`, labels=c("Gm/Gm","Pacific herring","Walleye pollock","N.smoothtongue")))
 
@@ -318,8 +313,6 @@ GSurfP<-draw(surfSmooths)+
   guides(fill=guide_legend(override.aes = list(alpha = 1)))+
   facet_wrap(~.model, scales="free", nrow=1)+
   geom_hline(yintercept=0, lty=2, color="gray40", linewidth=0.5)
-
-#ggsave(file.path(fig.path, "Fig. 6_Surface Temp effects.tiff"),GSurfP, width=10, height=3.5, compression="lzw", dpi=300)
 
 # On the response scale
 surfSmooths2<-fitSpecies |>
@@ -346,9 +339,6 @@ GSurfP2<-ggplot(data=surfSmooths2, aes(y=.estimate, x=sstReShelf))+
   facet_wrap(~KLPreyGroup, scales="free", nrow=2)
   
 
-#ggsave(file.path(fig.path, "Fig. 6_Surface Temp effects.tiff"),GSurfP, width=8, height=6, compression="lzw", dpi=300)
-
-
 # Figure 4 all - All three plots together ------------------------------------------------
 
 layout <- "
@@ -361,7 +351,6 @@ GAll<-GBottP/GSurfP/GPollP +
     plot_annotation(tag_levels="a") & 
   theme(plot.tag = element_text(size = 12,face="bold"))
 
-#ggsave(file.path(fig.path,"Figure_4.tiff"), GAll, width=12, height=10, dpi=300, compression="lzw")
 ggsave(file.path(fig.path,"Figure_4.pdf"), GAll, width=12, height=10,device=cairo_pdf,family="Arial",dpi=600)
 
 # Complex effects (not a figure in manuscript) ------------------------------------------------------------
