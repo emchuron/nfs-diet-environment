@@ -1,5 +1,7 @@
 # Overview
-This repository contains the code and data associated with a paper describing the relationships between northern fur seal diet composition and environmental conditions within foraging areas on the Pribilof Islands, as well as the influence of diet composition on fur seal pup mass and early mortality. This paper, titled "Biological and physical environmental drivers of diet variation in northern fur seals", is currently submitted to Ecology and Evolution. 
+This repository contains the code and data associated with a paper describing the relationships between northern fur seal diet composition and environmental conditions within foraging areas on the Pribilof Islands, as well as the influence of diet composition on fur seal pup mass and early mortality. 
+
+E.A. McHuron, J.T. Sterling, K. Luxa, J. Thorson, R. Towell, R.R. Ream, and T. Zeppelin. "Biological and physical environmental drivers of diet variation in northern fur seals". Submitted to Ecology and Evolution
 
 # Structure
 The four folders in this repository are: 
