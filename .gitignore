@@ -2,6 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-.ud
-.data-raw
+data-raw
 .DS_Store
+data/Resampled data for sample size determination.rds
