@@ -1,3 +1,5 @@
+# This script downloads environmental variables of interest and links it with
+# complexes to create the predictor variables for the analysis
 
 #devtools::install_github("sean-rohan-NOAA/akgfmaps", build_vignettes = TRUE)
 #devtools::install_github("afsc-gap-products/coldpool")
