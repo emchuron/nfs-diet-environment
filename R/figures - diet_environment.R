@@ -9,6 +9,7 @@ library(ggokabeito)
 library(sf)
 library(magick)
 library(ggpubr)
+library(gratia)
 
 fig.path<-file.path(here::here(), "figures")
 input.path<-file.path(here::here(), "data")
