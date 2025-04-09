@@ -10,7 +10,7 @@ The four folders in this repository are:
 3) **output** - contains saved output from analyses
 4) **figures** - figures generated for the publication.
 
-Diet and pup metrics in their rawest form are not provided but the code used to generate the summaries from these datasets are included ("create-UD", "create-diet", "create-pup metrics" in R folder). The data summaries are provided in the **data** folder, which are the basis for all of the analyses described in the paper. 
+Diet and pup metrics in their rawest form are not provided but the code used to generate the summaries from these datasets are included ("create-UD", "create-diet", "create-pup metrics" in R folder). The data summaries are provided in the data folder, which are the basis for all of the analyses described in the paper. One of the outputs used to create a supplemental figure is not included due to size.
 
 
  
