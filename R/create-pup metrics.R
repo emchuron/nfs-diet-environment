@@ -4,14 +4,15 @@
 library(here)
 library(tidyverse)
 library(readxl)
+library(corrr)
 
 # Set paths and read in data ----------------------------------------------
 
-input.path<-file.path(here::here(), "data-raw")
-output.path<-file.path(here::here(), "data")
+input.path<-here("data-raw")
+output.path<-here("data")
 
-pupWeight<-fread(file.path(input.path,"pupWTLiz_2023.csv"))
-pupMort<-fread(file.path(input.path,"liz_mort_2023.csv"))
+pupWeight<-data.table::fread(file.path(input.path,"pupWTLiz_2023.csv"))
+pupMort<-data.table::fread(file.path(input.path,"liz_mort_2023.csv"))
 
 complexes<-readxl::read_xlsx(file.path(input.path,"Rookery complexes.xlsx")) |>
   group_by(rkname)|>
@@ -35,7 +36,7 @@ pupWeight2<-pupWeight |>
   unnest(data) |>
   filter(term=="day") |>
   mutate(weightAdj=weight+((25-day)*estimate))|>
-  dplyr::select(Complex,Sex,weight,weightAdj,day,year)|>
+  dplyr::select(Complex,rookery,Sex,weight,weightAdj,day,year)|>
   dplyr::rename("Year"="year")|>
   filter(day>=19 & day<=31)
 
@@ -43,15 +44,23 @@ pupWeightSum<-pupWeight2 |>
   group_by(Year,Complex,Sex)|>
   dplyr::summarise(mWeight=mean(weightAdj),mWeightUnAdj=mean(weight),medWeight=median(weightAdj),qWeight25=quantile(weightAdj, 0.25),qWeight75=quantile(weightAdj,0.75),sdWeight=sd(weightAdj),sdWeightUnAdj=sd(weight), mDay=mean(day), nPup=length(!is.na(weightAdj)))
  
+pupWeightSumRook<-pupWeight2 |>
+  group_by(Year,Complex,rookery,Sex)|>
+  dplyr::summarise(mWeight=mean(weightAdj),sdWeight=sd(weightAdj), nPup=length(weightAdj))
+
 # Save output
 saveRDS(pupWeightSum,file.path(output.path, "Pup weights by complex.rds"))
+saveRDS(pupWeightSumRook, file.path(output.path, "Pup weights by rookery.rds"))
 
 # Pup mortality -----------------------------------------------------------
 
-pupMortSum<-pupMort|>
+pupMort2<-pupMort|>
   filter(!is.na(deadPups))|>
   dplyr::left_join(complexes,by=c("rcod"="rkname"))|>
   dplyr::rename("Year"="year")|>
+  dplyr::mutate(MMort=deadPups/pupsBorn)
+  
+pupMortSum<-pupMort2|>
   group_by(Year,Complex)|>
   dplyr::summarise(MMort=mean(deadPups/pupsBorn,na.rm=T))|>
   ungroup()|>
@@ -59,3 +68,4 @@ pupMortSum<-pupMort|>
 
 # Save output
 saveRDS(pupMortSum, file.path(output.path, "Pup mortality by complex.rds"))
+saveRDS(pupMort2, file.path(output.path, "Pup mortality by rookery.rds"))
