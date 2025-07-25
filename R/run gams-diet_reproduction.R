@@ -2,9 +2,10 @@
 
 library(data.table)
 library(tidyverse)
+library(here)
 
-output.path<-file.path(here::here(), "output")
-input.path<-file.path(here::here(), "data")
+output.path<-here("output")
+input.path<-here("data")
 
 # Read in response and predictor variables ---------------------------------
 
@@ -13,8 +14,8 @@ diet<-fread(file.path(input.path, "Diet response variables for analysis_Focal pr
   mutate(FO=freq/N)
 
 # Pup metrics
-pupWeight<-readRDS(file.path(input.path, "Pup weights by complex.rds"))
-pupMort<-readRDS(file.path(input.path, "Pup mortality by complex.rds"))
+pupMort<-readRDS(file.path(input.path, "Pup mortality by rookery.rds"))
+pupWeight<-readRDS(file.path(input.path, "Pup weights by rookery.rds"))
 
 # Join with diet data -----------------------------------------------------
 
@@ -27,29 +28,42 @@ dietVars<- diet |>
 # Pup weight - has multiple joins because of pup sex
 dietWeight<-dietVars |>
   left_join(pupWeight) |>
-  dplyr::select(Complex, Year, Month, FO,anamFO,sdFO,KLPreyGroup, Sex, mWeight, medWeight,qWeight25,qWeight75,mWeightUnAdj,sdWeight, sdWeightUnAdj,sdFO, nPup, mDay) |>
+  dplyr::select(Complex, rookery,Year, Month, FO,anamFO,sdFO,KLPreyGroup, Sex, mWeight,sdWeight,nPup) |>
   filter(!is.na(mWeight)) 
 
 # Prey groups of Pollock and not pollock - Sum
 dietWeightW<-dietWeight |>
   mutate(KLPreyGroup2=ifelse(KLPreyGroup=="Pollock", "Pollock", "Other"))|>
-  group_by(Complex, Year, Sex,KLPreyGroup2,mWeight,sdWeight)|>
+  group_by(Complex, rookery,Year, Sex,KLPreyGroup2,mWeight,sdWeight,nPup)|>
   summarise(sumFO=sum(FO))|>
-  pivot_wider(names_from=KLPreyGroup2, values_from=sumFO,id_cols = c(Complex,Year,Sex,mWeight,sdWeight))|>
-  mutate(Complex=as.factor(Complex), Exclude=case_when(Year==1994 & (Complex=="SGNorth" | Complex=="SGSouth")~"Yes",.default="No"))
+  pivot_wider(names_from=KLPreyGroup2, values_from=sumFO,id_cols = c(Complex,rookery,Year,Sex,mWeight,sdWeight,nPup))|>
+  mutate(Complex=as.factor(Complex), rookery=factor(rookery), Exclude=case_when(Year==1994 & (Complex=="SGNorth" | Complex=="SGSouth")~"Yes",.default="No"))
 
 #Mortality
 dietMort<-dietVars |>
   left_join(pupMort)|>
-  dplyr::select(Complex, Year,FO,KLPreyGroup,MMort,sdFO) |>
-  filter(!is.na(MMort))
+  mutate(Mort=deadPups/pupsBorn)|>
+  dplyr::select(Complex, rcod,Year,FO,KLPreyGroup,Mort,sdFO) |>
+  filter(!is.na(Mort))
 
 dietMortW<-dietMort |>
   mutate(KLPreyGroup2=ifelse(KLPreyGroup=="Pollock", "Pollock", "Other"))|>
-  group_by(Complex, Year,MMort, KLPreyGroup2)|>
+  group_by(Complex,rcod, Year,Mort, KLPreyGroup2)|>
   summarise(sumFO=sum(FO))|>
-  pivot_wider(names_from=KLPreyGroup2, values_from=sumFO,id_cols = c(Complex,Year,MMort))|>
-  mutate(Complex=as.factor(Complex))
+  pivot_wider(names_from=KLPreyGroup2, values_from=sumFO,id_cols = c(Complex,rcod,Year,Mort))|>
+  mutate(Complex=as.factor(Complex), rookery=factor(rcod))
+
+# Summary ----------------------------------------------------------------
+dietWeightSum<-dietWeightW|>
+  filter(Exclude=="No")|>
+  group_by(Year,Complex,Sex)|>
+  summarise(TPup=sum(nPup))
+
+dietMortW|>
+  ungroup()|>
+  summarise(MMort=mean(Mort))
+
+summary(dietMortW)
 
 # Analysis ----------------------------------------------------------------
 
@@ -57,12 +71,27 @@ library(mgcv)
 library(gratia)
 library(DHARMa)
 
+# Notes
+# The random effect of rookery was included in R1 instead of pre-analysis
+# averaging. Now there are two random effects (Complex and rookery). I could 
+# have included a third random effect s(Complex, rookery, bs="re"), which 
+# estimates the deviations from the rookery and Complex averages but this 
+# didn't seem necessary and smooths were nearly identical between the two.
+# This addition reflects the patterns you see in the plots, where within a complex
+# rookeries are not that variable in weight (and there is more consistent sampling)
+# of the same rookeries, so there was really no effect of adding it here. It
+# had a slight change to the mortality conclusions, as a plot of the data show
+# a lot more variability within a complex, but the general pattern of
+# the results was still the same. 
+
 # Pup weights - mean --------------------------------------------------------
 # Note - fitting the final model to individual pup sexes produces generally the same patterns
-fitWeight1<-gam(mWeight~Sex+s(Complex, bs="re")+s(Year)+s(Other)+s(Pollock), data=subset(dietWeightW, Exclude=="No"), select=T, method="REML")
-fitWeight2<-gam(mWeight~Sex+s(Complex, bs="re")+s(Pollock) + s(Year), data=subset(dietWeightW, Exclude=="No"), select=T, method="REML")
-fitWeight3<-gam(mWeight~Sex+s(Complex, bs="re")+s(Year) + s(Other), data=subset(dietWeightW, Exclude=="No"),select=T, method="REML")
-fitWeight4<-gam(mWeight~Sex+s(Complex, bs="re")+s(Pollock) + s(Other), data=subset(dietWeightW, Exclude=="No"),select=T, method="REML")
+fitWeight1<-gam(mWeight~Sex+s(Year, by=Sex)+s(Complex, bs="re")
+                + s(rookery,bs="re")+s(Other, by=Sex)+s(Pollock, by=Sex), data=subset(dietWeightW, Exclude=="No"), select=T, method="REML")
+fitWeight1a<-gam(mWeight~Sex+s(Complex, bs="re")+s(rookery, bs="re")+s(Year,by=Sex)+s(Other,by=Sex)+s(Pollock,by=Sex), data=subset(dietWeightW), select=T, method="REML") # all the data - no exclusions
+fitWeight2<-gam(mWeight~Sex+s(Complex, bs="re")+s(Pollock, by=Sex)+s(rookery, bs="re") + s(Year, by=Sex), data=subset(dietWeightW, Exclude=="No"), select=T, method="REML")
+fitWeight3<-gam(mWeight~Sex+s(Complex, bs="re")+s(Year, by=Sex) +s(rookery, bs="re")+ s(Other, by=Sex), data=subset(dietWeightW, Exclude=="No"),select=T, method="REML")
+fitWeight4<-gam(mWeight~Sex+s(Complex, bs="re")+s(Pollock, by=Sex) + s(Other, by=Sex)+s(rookery, bs="re"), data=subset(dietWeightW, Exclude=="No"),select=T, method="REML")
 
 gam.check(fitWeight1)
 gam.check(fitWeight2)
@@ -89,6 +118,7 @@ plotResiduals(pupWeightResid1, form =dietWeightW$Year[dietWeightW$Exclude=="No"]
 plotResiduals(pupWeightResid1, form =dietWeightW$Pollock[dietWeightW$Exclude=="No"])
 plotResiduals(pupWeightResid1, form =dietWeightW$Other[dietWeightW$Exclude=="No"])
 plotResiduals(pupWeightResid1, form =dietWeightW$Complex[dietWeightW$Exclude=="No"])
+plotResiduals(pupWeightResid1, form =dietWeightW$rookery[dietWeightW$Exclude=="No"])
 
 # Without year
 pupWeightResid2<-simulateResiduals(fitWeight4, plot=F)
@@ -96,13 +126,15 @@ plotResiduals(pupWeightResid2, form =dietWeightW$Year[dietWeightW$Exclude=="No"]
 plotResiduals(pupWeightResid2, form =dietWeightW$Pollock[dietWeightW$Exclude=="No"])
 plotResiduals(pupWeightResid2, form =dietWeightW$Other[dietWeightW$Exclude=="No"])
 plotResiduals(pupWeightResid2, form =dietWeightW$Complex[dietWeightW$Exclude=="No"])
+plotResiduals(pupWeightResid2, form =dietWeightW$rookery[dietWeightW$Exclude=="No"])
 
 # Pup weights sd --------------------------------------------------------
 
-fitWeightsd1<-gam(sdWeight~Sex+s(Complex, bs="re")+s(Pollock)+s(Year)+s(Other), data=subset(dietWeightW, Exclude=="No"), select=T, method="REML")
-fitWeightsd2<-gam(sdWeight~Sex+s(Complex, bs="re")+s(Pollock)+s(Other), data=subset(dietWeightW, Exclude=="No"), select=T, method="REML")
-fitWeightsd3<-gam(sdWeight~Sex+s(Complex, bs="re")+s(Year)+s(Other), data=subset(dietWeightW, Exclude=="No"), select=T, method="REML")
-fitWeightsd4<-gam(sdWeight~Sex+s(Complex, bs="re")+s(Year)+s(Pollock), data=subset(dietWeightW, Exclude=="No"), select=T, method="REML")
+fitWeightsd1<-gam(sdWeight~Sex+s(Complex, bs="re")+s(Pollock, by=Sex)+s(Year, by=Sex)+s(Other, by=Sex)+s(rookery, bs="re"), data=subset(dietWeightW, Exclude=="No"), select=T, method="REML")
+fitWeightsd1a<-gam(sdWeight~Sex+s(Complex, bs="re")+s(Pollock, by=Sex)+s(Year, by=Sex)+s(Other, by=Sex)+s(rookery, bs="re"), data=subset(dietWeightW), select=T, method="REML")
+fitWeightsd2<-gam(sdWeight~Sex+s(Complex, bs="re")+s(Pollock, by=Sex)+s(Other, by=Sex)+s(rookery, bs="re"), data=subset(dietWeightW, Exclude=="No"), select=T, method="REML")
+fitWeightsd3<-gam(sdWeight~Sex+s(Complex, bs="re")+s(Year, by=Sex)+s(Other, by=Sex)+s(rookery, bs="re"), data=subset(dietWeightW, Exclude=="No"), select=T, method="REML")
+fitWeightsd4<-gam(sdWeight~Sex+s(Complex, bs="re")+s(rookery, bs="re")+s(Year, by=Sex)+s(Pollock, by=Sex), data=subset(dietWeightW, Exclude=="No"), select=T, method="REML")
 
 gam.check(fitWeightsd1)
 gam.check(fitWeightsd2)
@@ -129,19 +161,20 @@ plotResiduals(pupWeightSDResid1, form =dietWeightW$Year[dietWeightW$Exclude=="No
 plotResiduals(pupWeightSDResid1, form =dietWeightW$Other[dietWeightW$Exclude=="No"])
 plotResiduals(pupWeightSDResid1, form =dietWeightW$Pollock[dietWeightW$Exclude=="No"])
 plotResiduals(pupWeightSDResid1, form =dietWeightW$Complex[dietWeightW$Exclude=="No"])
+plotResiduals(pupWeightSDResid1, form =dietWeightW$rookery[dietWeightW$Exclude=="No"])
 
 plot(pupWeightSDResid2)
 plotResiduals(pupWeightSDResid2, form =dietWeightW$Year[dietWeightW$Exclude=="No"])
 plotResiduals(pupWeightSDResid2, form =dietWeightW$Other[dietWeightW$Exclude=="No"])
 plotResiduals(pupWeightSDResid2, form =dietWeightW$Pollock[dietWeightW$Exclude=="No"])
 plotResiduals(pupWeightSDResid2, form =dietWeightW$Complex[dietWeightW$Exclude=="No"])
-
+plotResiduals(pupWeightSDResid2, form =dietWeightW$rookery[dietWeightW$Exclude=="No"])
 
 # Pup Mortality --------------------------------------------------------
-fitMort1<-gam(MMort~s(Complex, bs="re")+s(Pollock)+s(Other)+s(Year), data=dietMortW,select=T, method="REML")
-fitMort2<-gam(MMort~s(Complex, bs="re")+s(Pollock)+s(Year), data=dietMortW, select=T, method="REML")
-fitMort3<-gam(MMort~s(Complex, bs="re")+s(Pollock)+s(Other), data=dietMortW, select=T, method="REML")
-fitMort4<-gam(MMort~s(Complex, bs="re")+s(Other)+s(Year), data=dietMortW, select=T, method="REML")
+fitMort1<-gam(Mort~s(Complex, bs="re")+s(Pollock)+s(rookery, bs="re")+s(Other)+s(Year), data=dietMortW,select=T, method="REML")
+fitMort2<-gam(Mort~s(Complex, bs="re")+s(Pollock)+s(Year)+s(rookery, bs="re"), data=dietMortW, select=T, method="REML")
+fitMort3<-gam(Mort~s(Complex, bs="re")+s(Pollock)+s(Other)+s(rookery, bs="re"), data=dietMortW, select=T, method="REML")
+fitMort4<-gam(Mort~s(Complex, bs="re")+s(Other)+s(Year)+s(rookery, bs="re"), data=dietMortW, select=T, method="REML")
 
 concurvity(fitMort1)
 concurvity(fitMort2)
@@ -156,6 +189,7 @@ plot(pupMortResid1)
 plotResiduals(pupMortResid1, form=dietMortW$Complex)
 plotResiduals(pupMortResid1, form=dietMortW$Year)
 plotResiduals(pupMortResid1, form=dietMortW$Pollock)
+plotResiduals(pupMortResid1, form=dietMortW$rookery)
 
 # Without year
 pupMortResid2<-simulateResiduals(fitMort3, plot=F)
@@ -163,6 +197,7 @@ plot(pupMortResid2)
 plotResiduals(pupMortResid2, form=dietMortW$Complex)
 plotResiduals(pupMortResid2, form=dietMortW$Year)
 plotResiduals(pupMortResid2, form=dietMortW$Pollock)
+plotResiduals(pupMortResid2, form=dietMortW$rookery)
 
 # Save final model outputs ------------------------------------------------
 
