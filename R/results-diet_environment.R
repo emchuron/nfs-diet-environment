@@ -7,12 +7,12 @@ library(patchwork)
 library(gam.hp)
 
 # Paths
-fig.path<-file.path(here::here(), "figures")
-input.path<-file.path(here::here(), "data")
-output.path<-file.path(here::here(), "output")
+fig.path<-here::here("figures")
+input.path<-here::here("data")
+output.path<-here::here("output")
 
 # Functions
-source(file.path(here::here(), 'R',"gam_hp_weight.R"))
+source(here::here('R',"gam_hp_weight.R"))
 
 dev_exp<-dev_expl <- function(model){
   if(is.null(model$null.deviance) | is.null(model$deviance)){
@@ -35,11 +35,11 @@ fitSum<-fitSpecies |>
   mutate(tidied=map(fitG, broom::tidy),
          deviance=map(fitG, dev_exp)) |>
   unnest(c(tidied,deviance)) |>
-  dplyr::select(-c(fitNullNoYear,fitNull,fitG))|>
+  dplyr::select(-c(fitNullNoYear,fitGNoYear,fitNull,fitG))|>
   mutate(p.value=ifelse(p.value>0.05, NA, p.value)) |>
   filter(!is.na(p.value)) |>
   arrange(p.value)  |>
-  filter(p.value<0.04 & !(KLPreyGroup=="Sandlance" & term=="s(bott_s)")& !(KLPreyGroup=="GBBM" & term=="s(sstReShelf)"))
+  filter(p.value<0.035)
 
 table(fitSum$term)
 
@@ -135,8 +135,8 @@ GSurfPR<-ggplot(subset(partialSpecies, name=="sstReShelf" & paste0(KLPreyGroup,.
   
 layout <- "
 AAAAA
-BBBB#
-CCCC#
+BBBBB
+CCCCC
 "
 GAllR<-GBottPR/GSurfPR/GPollPR +
   plot_layout(design = layout) &
