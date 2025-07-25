@@ -4,9 +4,10 @@ library(mgcv)
 library(gratia)
 library(data.table)
 library(tidyverse)
+library(here)
 
-output.path<-file.path(here::here(), "output")
-input.path<-file.path(here::here(), "data")
+output.path<-here("output")
+input.path<-here("data")
 
 # Read in response and predictor variables --------------------------------
 
@@ -46,14 +47,14 @@ dietSum<-dietVarsUn |>
 # Correlations among predictor variables ----------------------------------
 
 # At the complex level
-corEast<-cor(dietVars$SPEast[dietVars$SPEast$KLPreyGroup=="Pollock",c(9:36)], method="pearson")
-corEBay<-cor(dietVars$SPEnglishBay[dietVars$SPEnglishBay$KLPreyGroup=="Pollock",c(9:36)], method="pearson")
-corReef<-cor(dietVars$SPReefPoint[dietVars$SPReefPoint$KLPreyGroup=="Pollock",c(9:36)], method="pearson")
-corNorth<-cor(dietVars$SGNorth[dietVars$SGNorth$KLPreyGroup=="Pollock",c(9:36)], method="pearson")
-corSouth<-cor(dietVars$SGSouth[dietVars$SGSouth$KLPreyGroup=="Pollock",c(9:36)], method="pearson")
+corEast<-cor(dietVars$SPEast[dietVars$SPEast$KLPreyGroup=="Pollock",sstRe:sst_s], method="pearson")
+corEBay<-cor(dietVars$SPEnglishBay[dietVars$SPEnglishBay$KLPreyGroup=="Pollock",sstRe:sst_s], method="pearson")
+corReef<-cor(dietVars$SPReefPoint[dietVars$SPReefPoint$KLPreyGroup=="Pollock",sstRe:sst_s], method="pearson")
+corNorth<-cor(dietVars$SGNorth[dietVars$SGNorth$KLPreyGroup=="Pollock",sstRe:sst_s], method="pearson")
+corSouth<-cor(dietVars$SGSouth[dietVars$SGSouth$KLPreyGroup=="Pollock",sstRe:sst_s], method="pearson")
 
 # At the broader level
-corAll<-cor(dietVarsUn[dietVarsUn$KLPreyGroup=="Pollock",c(9:36)], method="pearson")
+corAll<-cor(dietVarsUn[dietVarsUn$KLPreyGroup=="Pollock",sstRe:sst_s], method="pearson")
 
 # Fit the analysis --------------------------------------------------------
 library(DHARMa)
