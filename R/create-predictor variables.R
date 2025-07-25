@@ -19,8 +19,8 @@ library(ggplot2)
 
 foYears<-1987:2022
 foMonths<-7:11
-input.path<-file.path(here(), "data-raw")
-afpath1<-file.path(here(),"data","Adult female 95% UD.rds")
+input.path<-here("data-raw")
+afpath1<-here("data","Adult female 95% UD.rds")
 coords<-readRDS(afpath1) |>
   sf::st_transform(crs=4326)|>
   st_bbox()
@@ -59,10 +59,11 @@ oisst2<-oisst |>
   as("SpatRaster")
 
 # Fish data from survey (from https://www.fisheries.noaa.gov/foss)  -----
-fish<-data.table::fread(file.path(input.path,"EBS Trawl Survey Data.csv")) |>
-  dplyr::select(Year, `Common Name`,`Longitude Dd`,`Latitude Dd`,`Weight Kg`,Count,`Area Swept Ha`,`Cpue Kgkm2`,`Cpue Nokm2`) |>
-  filter(`Common Name`=="Walleye Pollock" | `Common Name`=="Pacific Herring" | `Common Name` == "Atka Mackerel" | `Common Name` ==
-           "Sablefish")
+pollock<-data.table::fread(file.path(input.path,"CATCH AND HAUL DATA.csv")) |>
+  janitor::clean_names()
+
+hauls<-data.table::fread(file.path(input.path,"HAUL DATA.csv")) |>
+  janitor::clean_names()
 
 #-----------------------------------------------------------------------------------
 # 2. Link local variables with each complex
@@ -129,8 +130,20 @@ bottS<-data.table::rbindlist(btExtract)|>
 
 # Survey data - fish ------------------------------------------------------
 
+# Join with hauls to fill in zero values - I couldn't join on all the variables in haul or else it didn't join properly
+haulSummary<-hauls |>
+  group_by(survey_year, station_id, cruise_id) |>
+  count()
+
+fish<-full_join(pollock, hauls |> select(c(survey_year,survey_id, survey_name_official, station_id, haul_id, 
+                                               haul_number,start_longitude_decimal_degrees,start_latitude_decimal_degrees))) |>
+  mutate(weight_cpue_kg_km2=case_when(is.na(weight_cpue_kg_km2)~0,.default=weight_cpue_kg_km2),
+         number_cpue_no_km2=case_when(is.na(number_cpue_no_km2)~0,.default=number_cpue_no_km2),
+         taxon_common_name=unique(taxon_common_name)[1]) |>
+  dplyr::select(survey_year, taxon_common_name, start_latitude_decimal_degrees,start_longitude_decimal_degrees, area_swept_km, weight_cpue_kg_km2, taxon_weight_kg, taxon_count,number_cpue_no_km2)
+
 # Convert to sf 
-fishsp<-st_as_sf(fish, coords = c("Longitude Dd", "Latitude Dd"), crs = 4326) 
+fishsp<-st_as_sf(fish, coords = c("start_longitude_decimal_degrees", "start_latitude_decimal_degrees"), crs = 4326) 
 
 # Join with complex UD
 fishsp2 <- st_join(fishsp, af95, join = st_within)
@@ -138,14 +151,14 @@ fishsp2 <- st_join(fishsp, af95, join = st_within)
 # Create summaries
 fishSum <-fishsp2 |>
   st_drop_geometry() |>
-  group_by(id, Year, `Common Name`) |>
-  dplyr::summarise(MeanCPUEkg=mean(`Cpue Kgkm2`, na.rm=T), MeanCPUENo=mean(`Cpue Nokm2`, na.rm=T),
-                   SumCPUEkg1=(sum(`Weight Kg`)/sum(`Area Swept Ha`))*100,SumCPUENo1=(sum(`Count`)/sum(`Area Swept Ha`))*100,
-                   SumCPUEkg2=sum(`Cpue Kgkm2`, na.rm=T), SumCPUENo2=sum(`Cpue Nokm2`, na.rm=T)) |>
-  filter(Year %in% foYears)|>
-  pivot_longer(-c(id, Year, `Common Name`),values_to="value", names_to="variable") |>
-  unite("var",`Common Name`:variable) |>
-  data.table::setnames('id',"Complex")
+  group_by(id, survey_year, taxon_common_name)|>
+  #group_by(id, Year, `Common Name`) |>
+  dplyr::summarise(MeanCPUEkg=mean(`weight_cpue_kg_km2`, na.rm=T), MeanCPUENo=mean(number_cpue_no_km2, na.rm=T),
+                   SumCPUEkg=sum(`weight_cpue_kg_km2`, na.rm=T), SumCPUENo=sum(`number_cpue_no_km2`, na.rm=T)) |>
+  filter(survey_year %in% foYears)|>
+  pivot_longer(-c(id, survey_year, `taxon_common_name`),values_to="value", names_to="variable") |>
+  unite("var",taxon_common_name:variable) |>
+  rename(c(Complex=id, Year=survey_year))
 
 # Put all values that are static for the whole season
 surveyVars<-plyr::rbind.fill(fishSum, bottS, sstS)|>
