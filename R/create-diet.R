@@ -5,11 +5,11 @@ library(tidyverse)
 library(readxl)
 library(patchwork)
 
-output.path<-file.path(here(), "data")
-input.path<-file.path(here(), "data-raw")
+output.path<-here("data")
+input.path<-here("data-raw")
 fig.path<-file.path(here::here(), "figures")
 
-source(file.path(here(),"R","diet_fun.R"))
+source(here("R","diet_fun.R"))
 
 # Read in diet data -------------------------------------------------------
 
@@ -38,13 +38,22 @@ nSum2<-diet |>
 
 # Proportion of sample types
 propType<-diet |>
+  filter(CollectionMonth==8)|>
+  filter(SampleType!="NULL" & SampleType!="SCAT,ENEMA")|> # There are no scat/enema samples in august
   group_by(CollectionYear, Island,Complex, CollectionMonth, SampleType)|>
   dplyr::summarise(n=length(unique(SampleLabel))) |>
+  ungroup()|>
+  complete(CollectionYear, Island, Complex,SampleType, fill=list(CollectionMonth=8, n=0))|>
   group_by(CollectionYear,Island,Complex, CollectionMonth) |>
   dplyr::mutate(N=sum(n), prop=n/N)|>
   ungroup()|>
   filter(N>=samplecut)
   
+propTypeSum<-propType|>
+  group_by(Complex, SampleType, CollectionMonth)|>
+  summarise(mean(prop))|>
+  ungroup()
+
 # Distribution of samples among rookeries
 nSumRook<-diet |> 
   group_by(CollectionYear, Island,Complex, Rookery,CollectionMonth)|>
