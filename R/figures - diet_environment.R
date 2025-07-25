@@ -11,9 +11,9 @@ library(magick)
 library(ggpubr)
 library(gratia)
 
-fig.path<-file.path(here::here(), "figures")
-input.path<-file.path(here::here(), "data")
-output.path<-file.path(here::here(), "output")
+fig.path<-here::here("figures")
+input.path<-here::here("data")
+output.path<-here::here("output")
 
 dev_exp<-dev_expl <- function(model){
   if(is.null(model$null.deviance) | is.null(model$deviance)){
@@ -209,8 +209,8 @@ GYear2<-ggplot(data=yearSmooths2, aes(y=.estimate, x=Year))+
 # Figure 4c - Pollock effects ------------------------------------------------------------
 
 # Link scale
-pollockSmooths<-compare_smooths(fitSpecies$fitG[[3]],fitSpecies$fitG[[4]],fitSpecies$fitG[[5]],fitSpecies$fitG[[6]], select="s(walleye_pollock_mean_cpue_no)")|>
-  mutate(.model=factor(`.model`, labels=c("Pacific herring", "Hexagrammid/sablefish","Walleye pollock","Salmon")))
+pollockSmooths<-compare_smooths(fitSpecies$fitG[[3]],fitSpecies$fitG[[5]],fitSpecies$fitG[[7]],fitSpecies$fitG[[4]],fitSpecies$fitG[[6]], select="s(walleye_pollock_mean_cpue_no)")|>
+  mutate(.model=factor(`.model`, labels=c("Pacific herring","Hexagrammid/sablefish","Walleye pollock","Salmon","Sand lance")))
 
 GPollP<-draw(pollockSmooths)+
   ggthemes::theme_few()+
@@ -220,8 +220,8 @@ GPollP<-draw(pollockSmooths)+
   scale_x_continuous(breaks=seq(0,50000, by=10000), labels=c(0,10,20,30,40,50))+
   theme(legend.position="none")+
   labs(y = "Partial effect", x=bquote("Mean pollock abundance (1000s"~km^-2*")"))+
-  scale_color_manual(values=speciesCol[c(3:6)])+
-  scale_fill_manual(values=speciesCol[c(3:6)])+
+  scale_color_manual(values=speciesCol[c(3:7)])+
+  scale_fill_manual(values=speciesCol[c(3:7)])+
   guides(fill=guide_legend(override.aes = list(alpha = 1)))+
   facet_wrap(~.model, scales="free", nrow=1)+
   geom_hline(yintercept=0, lty=2, color="gray40", linewidth=0.5)
@@ -237,25 +237,11 @@ pollockSmooths2<-fitSpecies |>
                 .fns = \(x) linkTransform(x + constant))) |>
   filter(.smooth=="s(walleye_pollock_mean_cpue_no)")
 
-GPollP2<-ggplot(data=pollockSmooths2, aes(y=.estimate, x=walleye_pollock_mean_cpue_no))+
-  geom_line(aes(color=KLPreyGroup))+
-  geom_ribbon(aes(ymin=.lower_ci, ymax=.upper_ci, fill=KLPreyGroup), alpha=0.2)+
-  ggthemes::theme_few()+
-  scale_x_continuous(breaks=seq(0,50000, by=10000), labels=c(0,10,20,30,40,50))+
-  geom_rug(data=subset(fo, KLPreyGroup %in% pollockSmooths2$KLPreyGroup),sides="b", inherit.aes=F, aes(x=walleye_pollock_mean_cpue_no),linewidth=0.25)+
-  ggtitle(NULL)+
-  theme(legend.position="none")+
-  labs(y = "Partial effect", x=bquote("Mean pollock abundance (1000s"~km^-2*")"))+
-  scale_color_manual(values=speciesCol[c(3:6)])+
-  scale_fill_manual(values=speciesCol[c(3:6)])+
-  guides(fill=guide_legend(override.aes = list(alpha = 1)))+
-  facet_wrap(~KLPreyGroup, scales="free", nrow=2)
-
 # Figure 4a - Bottom Temperature effects ------------------------------------------------------------
 
 # Link scale
-bottomSmooths<-compare_smooths(fitSpecies$fitG[[2]],fitSpecies$fitG[[3]], fitSpecies$fitG[[4]],fitSpecies$fitG[[5]],fitSpecies$fitG[[6]],select="s(bott_s)") |>
-  mutate(.model=factor(`.model`, labels=c("Gm/Gm","Pacific herring", "Hexagrammid/sablefish","Walleye pollock","Salmon")))
+bottomSmooths<-compare_smooths(fitSpecies$fitG[[3]],fitSpecies$fitG[[5]], fitSpecies$fitG[[2]],fitSpecies$fitG[[4]],fitSpecies$fitG[[6]],select="s(bott_s)") |>
+  mutate(.model=factor(`.model`, labels=c("Gm/Gm","Pacific herring","Hexagrammid/sablefish", "Walleye pollock","Salmon")))
 
 GBottP<-draw(bottomSmooths)+
   ggthemes::theme_few()+
@@ -280,27 +266,11 @@ bottSmooths2<-fitSpecies |>
                 .fns = \(x) linkTransform(x + constant))) |>
   filter(.smooth=="s(bott_s)") 
 
-GBottP2<-ggplot(data=bottSmooths2, aes(y=.estimate, x=bott_s))+
-  geom_line(aes(color=KLPreyGroup))+
-  geom_ribbon(aes(ymin=.lower_ci, ymax=.upper_ci, fill=KLPreyGroup), alpha=0.2)+
-  ggthemes::theme_few()+
-  geom_rug(data=subset(fo, KLPreyGroup %in% bottSmooths2$KLPreyGroup),sides="b", inherit.aes=F, aes(x=bott_s),linewidth=0.25)+
-  ggtitle(NULL)+
-  theme(legend.position="none")+
-  labs(y = "Partial effect", x=bquote("Mean bottom temperature ("*degree*"C)"))+
-  scale_color_manual(values=speciesCol[c(3:6)])+
-  scale_fill_manual(values=speciesCol[c(3:6)])+
-  guides(fill=guide_legend(override.aes = list(alpha = 1)))+
-  facet_wrap(~KLPreyGroup, scales="free", nrow=2,
-             labeller=as_labeller(c("GBBM"="Gb/Bm","Herring"="Herring","HexSable"=
-                                      "Hexagrammid/sablefish","Pollock"="Walleye pollock","Salmon"= "Salmon")))
-
-
 # Figure 4b - Surface Temperature effects ------------------------------------------------------------
 
 # Link scale
-surfSmooths<-compare_smooths(fitSpecies$fitG[[2]],fitSpecies$fitG[[3]],fitSpecies$fitG[[5]],fitSpecies$fitG[[8]],select="s(sstReShelf)") |>
-  mutate(.model=factor(`.model`, labels=c("Gm/Gm","Pacific herring","Walleye pollock","N.smoothtongue")))
+surfSmooths<-compare_smooths(fitSpecies$fitG[[3]],fitSpecies$fitG[[5]],fitSpecies$fitG[[2]],fitSpecies$fitG[[8]],fitSpecies$fitG[[1]],select="s(sstReShelf)") |>
+  mutate(.model=factor(`.model`, labels=c("Gb/Bm", "Gm/Gm","Pacific herring","Walleye pollock","N.smoothtongue")))
 
 GSurfP<-draw(surfSmooths)+
   ggthemes::theme_few()+
@@ -309,8 +279,8 @@ GSurfP<-draw(surfSmooths)+
   ggtitle(NULL)+
   theme(legend.position="none")+
   labs(y = "Partial effect", x=bquote("Mean surface temperature ("*degree*"C)"))+
-  scale_color_manual(values=speciesCol[c(2:3,5,8)])+
-  scale_fill_manual(values=speciesCol[c(2:3,5,8)])+
+  scale_color_manual(values=speciesCol[c(1:3,5,8)])+
+  scale_fill_manual(values=speciesCol[c(1:3,5,8)])+
   guides(fill=guide_legend(override.aes = list(alpha = 1)))+
   facet_wrap(~.model, scales="free", nrow=1)+
   geom_hline(yintercept=0, lty=2, color="gray40", linewidth=0.5)
@@ -326,26 +296,12 @@ surfSmooths2<-fitSpecies |>
                 .fns = \(x) linkTransform(x + constant))) |>
   filter(.smooth=="s(sstReShelf)") 
 
-GSurfP2<-ggplot(data=surfSmooths2, aes(y=.estimate, x=sstReShelf))+
-  geom_line(aes(color=KLPreyGroup))+
-  geom_ribbon(aes(ymin=.lower_ci, ymax=.upper_ci, fill=KLPreyGroup), alpha=0.2)+
-  ggthemes::theme_few()+
-  geom_rug(data=subset(fo, KLPreyGroup %in% surfSmooths2$KLPreyGroup),sides="b", inherit.aes=F, aes(x=sstReShelf),linewidth=0.25)+
-  ggtitle(NULL)+
-  theme(legend.position="none")+
-  labs(y = "Partial effect", x=bquote("Mean surface temperature ("*degree*"C)"))+
-  scale_color_manual(values=speciesCol[c(3:6)])+
-  scale_fill_manual(values=speciesCol[c(3:6)])+
-  guides(fill=guide_legend(override.aes = list(alpha = 1)))+
-  facet_wrap(~KLPreyGroup, scales="free", nrow=2)
-  
-
 # Figure 4 all - All three plots together ------------------------------------------------
 
 layout <- "
 AAAAA
-BBBB#
-CCCC#
+BBBBB
+CCCCC
 "
 GAll<-GBottP/GSurfP/GPollP +
      plot_layout(design = layout) &
